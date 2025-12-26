@@ -2,10 +2,11 @@ import os
 import time
 import json
 import logging
+import asyncio
 from dataclasses import asdict
-from typing import Optional
+from typing import Optional, List, Tuple
 
-from src.core.models import GenerationMode, Shot
+from src.core.models import GenerationMode, Shot, VideoArtifact, QualityScore
 from src.engine.director import CreativeDirector
 from src.engine.adapters import RunwayAdapter
 from src.generators.base import VideoGenerator
@@ -47,8 +48,12 @@ class FashionPipeline:
         if hasattr(self.generator, "OUTPUT_DIR"):
             self.generator.OUTPUT_DIR = self.run_dir
 
-    def run(self, product_name, category, features, images):
-        logger.info(f"🚀 Starting Pipeline Run for: {product_name}")
+    def run(self, product_name, category, features, images) -> List[Tuple[VideoArtifact, QualityScore, Shot]]:
+        """Synchronous wrapper for run_async"""
+        return asyncio.run(self.run_async(product_name, category, features, images))
+
+    async def run_async(self, product_name, category, features, images):
+        logger.info(f"🚀 Starting Async Pipeline Run for: {product_name}")
 
         # 1️⃣ Build intent
         intent = self.director.build_product_intent(
@@ -82,23 +87,18 @@ class FashionPipeline:
         TARGET_GOOD_VIDEOS = 10
         QUALITY_THRESHOLD = 7.0
         MAX_TOTAL_ATTEMPTS = 40
+        CONCURRENCY = 5
 
         accepted_results = []
         rejected_results = []
         prompts_map = {}
         blocked_prompts = set()
 
-        attempts = 0
-        shot_index = 0
+        semaphore = asyncio.Semaphore(CONCURRENCY)
 
-        # 3️⃣ Resilient generation loop
-        while (
-            len(accepted_results) < TARGET_GOOD_VIDEOS
-            and attempts < MAX_TOTAL_ATTEMPTS
-        ):
-            attempts += 1
-            shot = shots[shot_index % len(shots)]
-            shot_index += 1
+        async def attempt_generation(shot: Shot, attempt_idx: int):
+            if len(accepted_results) >= TARGET_GOOD_VIDEOS:
+                return None
 
             raw_prompt = self.adapter.format(intent, shot)
             prompt = sanitize_prompt(raw_prompt)
@@ -106,51 +106,82 @@ class FashionPipeline:
 
             if prompt_id in blocked_prompts:
                 logger.info("⏭️ Skipping blocked prompt")
-                continue
+                return None
 
-            try:
-                artifact = self.generator.generate(
-                    prompt=prompt,
-                    reference_paths=images,
-                    seed=None,
-                )
-
-                prompts_map[artifact.prompt_id] = prompt
-
-                score = self.evaluator.evaluate(
-                    artifact=artifact,
-                    intent=intent,
-                    shot=shot,
-                    full_prompt=prompt,
-                )
-
-                result = {
-                    "artifact": artifact,
-                    "score": score,
-                    "shot": shot,
-                }
-
-                if score.overall >= QUALITY_THRESHOLD:
-                    accepted_results.append(result)
-                    logger.info(
-                        f"✅ Accepted {artifact.video_id} | "
-                        f"Score: {score.overall:.2f} "
-                        f"({len(accepted_results)}/{TARGET_GOOD_VIDEOS})"
-                    )
-                else:
-                    rejected_results.append(result)
-                    logger.info(
-                        f"❌ Rejected {artifact.video_id} | "
-                        f"Score: {score.overall:.2f}"
+            async with semaphore:
+                try:
+                    artifact = await self.generator.generate_async(
+                        prompt=prompt,
+                        reference_paths=images,
+                        seed=None,
                     )
 
-            except ValueError as e:
-                # HARD failure → blacklist prompt
-                logger.error(f"🚫 Blocking prompt due to safety failure: {e}")
-                blocked_prompts.add(prompt_id)
+                    prompts_map[artifact.prompt_id] = prompt
 
-            except Exception as e:
-                logger.warning(f"⚠️ Generation attempt failed: {e}")
+                    score = self.evaluator.evaluate(
+                        artifact=artifact,
+                        intent=intent,
+                        shot=shot,
+                        full_prompt=prompt,
+                    )
+
+                    result = {
+                        "artifact": artifact,
+                        "score": score,
+                        "shot": shot,
+                    }
+
+                    if score.overall >= QUALITY_THRESHOLD:
+                         # Thread-safe append in asyncio (it's single threaded event loop)
+                        accepted_results.append(result)
+                        logger.info(
+                            f"✅ Accepted {artifact.video_id} | "
+                            f"Score: {score.overall:.2f} "
+                            f"({len(accepted_results)}/{TARGET_GOOD_VIDEOS})"
+                        )
+                        return result
+                    else:
+                        rejected_results.append(result)
+                        logger.info(
+                            f"❌ Rejected {artifact.video_id} | "
+                            f"Score: {score.overall:.2f}"
+                        )
+                        return None
+
+                except ValueError as e:
+                    # HARD failure → blacklist prompt
+                    logger.error(f"🚫 Blocking prompt due to safety failure: {e}")
+                    blocked_prompts.add(prompt_id)
+                except Exception as e:
+                    logger.warning(f"⚠️ Generation attempt failed: {e}")
+            return None
+
+        # 3️⃣ Resilient generation loop (Parallel)
+        tasks = []
+        # We start by scheduling MAX_TOTAL_ATTEMPTS potentially, or we can do chunks.
+        # Since we have "break" condition (TARGET_GOOD_VIDEOS), scheduling all might act wasteful if we hit target early.
+        # But for simplicity in asyncio without complex queue management, we can schedule batches.
+        
+        # Let's use an approach where we schedule batches until target is met.
+        attempts = 0
+        shot_index = 0
+        
+        while len(accepted_results) < TARGET_GOOD_VIDEOS and attempts < MAX_TOTAL_ATTEMPTS:
+            batch_size = min(CONCURRENCY, MAX_TOTAL_ATTEMPTS - attempts)
+            current_batch_tasks = []
+            
+            for _ in range(batch_size):
+                if attempts >= MAX_TOTAL_ATTEMPTS: 
+                    break
+                shot = shots[shot_index % len(shots)]
+                current_batch_tasks.append(attempt_generation(shot, attempts))
+                shot_index += 1
+                attempts += 1
+            
+            if not current_batch_tasks:
+                break
+                
+            await asyncio.gather(*current_batch_tasks)
 
         # 4️⃣ Graceful fallback
         if not accepted_results:

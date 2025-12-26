@@ -1,0 +1,237 @@
+{
+  "timestamp": 1766777580.7185435,
+  "intent": {
+    "meta": {
+      "product_name": "Resilience Hoodie",
+      "category": "hoodie",
+      "reference_image_count": 1,
+      "key_features": [
+        "Text: 'I AM STRONGER'",
+        "Logo on chest"
+      ]
+    },
+    "brand_identity": {
+      "name": "illtochill",
+      "vibe": "minimal premium streetwear and therapeutic home d\u00e9cor",
+      "tone": "calm, resilient, grounded, modern",
+      "palette": [
+        "neutral tones",
+        "warm beige",
+        "charcoal",
+        "soft whites"
+      ]
+    },
+    "technical_specs": {
+      "lighting_global": {
+        "style": "diffused natural window light",
+        "temperature": "warm (3200K - 4500K)",
+        "quality": "soft shadows, no harsh contrast, zero surface glare"
+      },
+      "camera_global": {
+        "focal_length": "50mm (human eye perspective)",
+        "shot_type": "medium-long shot",
+        "movement": "slow smooth zoom, steady tripod stabilization",
+        "angle": "slight 15-degree side profile"
+      },
+      "materials": {
+        "canvas": "fine-grain matte cotton, non-reflective surface",
+        "environment": "light oak wood, clean plaster walls, minimal fabric"
+      },
+      "lighting_logic": "soft wrap-around lighting to avoid harsh shadows in the hood area"
+    },
+    "scene_rules": {
+      "poses": [
+        "model adjusting hood",
+        "standing side-by-side (front and back view)",
+        "hands in pouch pocket"
+      ],
+      "environments": [
+        "white studio wall with brown wooden floor",
+        "modern minimal interior"
+      ],
+      "camera_actions": [
+        "medium-range full body shot",
+        "slow tracking shot",
+        "static eye-level"
+      ],
+      "focus_points": [
+        "heavyweight fabric texture",
+        "backprint legibility",
+        "logo embroidery"
+      ]
+    },
+    "guardrails": {
+      "avoid": [
+        "neon colors",
+        "overexposed",
+        "text overlays",
+        "motion blur",
+        "low-res",
+        "cartoon",
+        "glare on canvas",
+        "anime",
+        "camera shake",
+        "harsh flash",
+        "distracting clutter"
+      ],
+      "strict_rule": "The artwork/canvas is the single source of truth; do not alter brushstrokes or colors."
+    }
+  },
+  "outputs": [
+    {
+      "video_id": "f22d007f",
+      "prompt_id": "b2f18b09",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "campaign_runs\\20251227-010234\\mock_gen_f22d007f.mp4"
+    },
+    {
+      "video_id": "f1a8ee29",
+      "prompt_id": "57189de3",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "campaign_runs\\20251227-010234\\mock_gen_f1a8ee29.mp4"
+    },
+    {
+      "video_id": "bc23a0a1",
+      "prompt_id": "8eb44b86",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "campaign_runs\\20251227-010234\\mock_gen_bc23a0a1.mp4"
+    },
+    {
+      "video_id": "5c3a0cbf",
+      "prompt_id": "8eb44b86",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "campaign_runs\\20251227-010234\\mock_gen_5c3a0cbf.mp4"
+    },
+    {
+      "video_id": "b0059719",
+      "prompt_id": "57189de3",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "campaign_runs\\20251227-010234\\mock_gen_b0059719.mp4"
+    },
+    {
+      "video_id": "ebf932ff",
+      "prompt_id": "b2f18b09",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "campaign_runs\\20251227-010234\\mock_gen_ebf932ff.mp4"
+    },
+    {
+      "video_id": "efe37fa2",
+      "prompt_id": "8eb44b86",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "campaign_runs\\20251227-010234\\mock_gen_efe37fa2.mp4"
+    },
+    {
+      "video_id": "8adbd151",
+      "prompt_id": "57189de3",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "campaign_runs\\20251227-010234\\mock_gen_8adbd151.mp4"
+    },
+    {
+      "video_id": "c99ad3fc",
+      "prompt_id": "57189de3",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "campaign_runs\\20251227-010234\\mock_gen_c99ad3fc.mp4"
+    },
+    {
+      "video_id": "8bf3ffdf",
+      "prompt_id": "b2f18b09",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "campaign_runs\\20251227-010234\\mock_gen_8bf3ffdf.mp4"
+    }
+  ],
+  "prompt_library": {
+    "b2f18b09": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: neon colors, overexposed, text overlays, motion blur, low-res, cartoon, glare on canvas, anime, camera shake, harsh flash, distracting clutter\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Text: 'I AM STRONGER', Logo on chest.\n\ud83c\udfac SCENE: Resilience Hoodie, hands in pouch pocket, modern minimal interior, slow tracking shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: backprint legibility, logo embroidery",
+    "57189de3": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: neon colors, overexposed, text overlays, motion blur, low-res, cartoon, glare on canvas, anime, camera shake, harsh flash, distracting clutter\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Text: 'I AM STRONGER', Logo on chest.\n\ud83c\udfac SCENE: Resilience Hoodie, standing side-by-side (front and back view), modern minimal interior, slow tracking shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: logo embroidery, backprint legibility",
+    "8eb44b86": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: neon colors, overexposed, text overlays, motion blur, low-res, cartoon, glare on canvas, anime, camera shake, harsh flash, distracting clutter\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Text: 'I AM STRONGER', Logo on chest.\n\ud83c\udfac SCENE: Resilience Hoodie, hands in pouch pocket, white studio wall with brown wooden floor, slow tracking shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: heavyweight fabric texture, logo embroidery"
+  }
+}

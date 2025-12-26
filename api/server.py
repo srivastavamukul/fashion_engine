@@ -24,8 +24,8 @@ class GenerateRequest(BaseModel):
     images: List[str]  # paths or URLs
 
 @app.post("/generate", response_model=GenerateResponse)
-def generate(request: GenerateRequest):
-    results = engine.run(
+async def generate(request: GenerateRequest):
+    results = await engine.run_async(
         product_name=request.product_name,
         category=request.category,
         features=request.features,

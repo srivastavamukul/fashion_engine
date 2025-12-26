@@ -34,3 +34,23 @@ class VideoGenerator:
             ValueError: For non-retryable configuration issues.
         """
         raise NotImplementedError("Subclasses must implement generate()")
+    
+    async def generate_async(
+        self, 
+        prompt: str, 
+        reference_paths: List[str], 
+        aspect_ratio: str = "16:9",
+        seed: Optional[int] = None
+    ) -> VideoArtifact:
+        """
+        Asynchronously generates a video.
+        Default implementation wraps the synchronous generate method for compatibility.
+        """
+        import asyncio
+        return await asyncio.to_thread(
+            self.generate, 
+            prompt=prompt, 
+            reference_paths=reference_paths, 
+            aspect_ratio=aspect_ratio, 
+            seed=seed
+        )

@@ -1,13 +1,12 @@
 import logging
+import asyncio
 from src.pipeline.manager import FashionPipeline
+from src.utils.logger import setup_logging
 
-# Configure Logging Globally
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+# Configure Logging
+logger = setup_logging()
 
-if __name__ == "__main__":
+async def main():
     # 1. Initialize
     engine = FashionPipeline(output_root="campaign_runs")
 
@@ -22,7 +21,7 @@ if __name__ == "__main__":
     # 3. Execute
     try:
         print("🚀 Starting Engine...")
-        winners = engine.run(**inputs)
+        winners = await engine.run_async(**inputs)
         
         print("\n🏆 FINAL SELECTION:")
         for artifact, score, _ in winners:
@@ -30,3 +29,6 @@ if __name__ == "__main__":
             
     except Exception as e:
         logging.critical(f"🔥 Critical Failure: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
