@@ -1,4 +1,4 @@
-# Antigravity Fashion Engine
+# Fashion Engine
 
 **Premium AI Video Generation Pipeline for Fashion Campaigns.**
 
