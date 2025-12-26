@@ -1,0 +1,37 @@
+{
+  "t-shirt": {
+    "poses": ["casual standing with slight head tilt", "walking toward camera", "side profile looking away"],
+    "environments": ["minimalist studio with soft shadows", "clean urban sidewalk", "industrial loft space"],
+    "camera": ["medium shot", "slow dolly-in", "waist-up pan"],
+    "focus_points": ["fabric drape", "neckline stitching", "chest graphic"],
+    "lighting_logic": "natural side-lighting to emphasize fabric texture"
+  },
+  "hoodie": {
+    "poses": ["model adjusting hood", "standing side-by-side (front and back view)", "hands in pouch pocket"],
+    "environments": ["white studio wall with brown wooden floor", "modern minimal interior"],
+    "camera": ["medium-range full body shot", "slow tracking shot", "static eye-level"],
+    "focus_points": ["heavyweight fabric texture", "backprint legibility", "logo embroidery"],
+    "lighting_logic": "soft wrap-around lighting to avoid harsh shadows in the hood area"
+  },
+  "mug": {
+    "poses": ["stationary on surface", "slow 360-degree rotation", "placed next to a steaming coffee pot"],
+    "environments": ["light brown kitchen marble slab", "wooden office desk", "minimalist cafe table"],
+    "camera": ["close-up macro", "middle-range orbital sweep", "top-down 45-degree angle"],
+    "focus_points": ["ceramic gloss finish", "text wrap-around clarity", "handle ergonomics"],
+    "lighting_logic": "specular highlights to show material quality, no glare on text"
+  },
+  "canvas": {
+    "poses": ["wall-mounted centered", "angled side view", "living room lifestyle context"],
+    "environments": ["premium drawing room with wooden flooring", "modern gallery wall", "neutral-toned bedroom"],
+    "camera": ["smooth cinematic zoom-in", "slow tilt-up", "static wide-to-medium transition"],
+    "focus_points": ["canvas matte texture", "exact artwork color matching", "logo placement in corner"],
+    "lighting_logic": "soft diffused window light, zero reflection on the print surface"
+  },
+  "default": {
+    "poses": ["centered static"],
+    "environments": ["neutral studio"],
+    "camera": ["static medium shot"],
+    "focus_points": ["overall product"],
+    "lighting_logic": "balanced studio light"
+  }
+}

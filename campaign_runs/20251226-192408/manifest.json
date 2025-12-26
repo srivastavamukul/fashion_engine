@@ -1,0 +1,89 @@
+{
+  "timestamp": 1766757252.6534429,
+  "run_id": "20251226-192408",
+  "intent": {
+    "meta": {
+      "product_name": "Resilience Hoodie",
+      "category": "hoodie",
+      "reference_image_count": 3,
+      "key_features": [
+        "Text: I AM STRONGER THAN THE FLAMES",
+        "Heavyweight cotton fabric",
+        "Backprint clearly visible",
+        "Logo embroidered on chest"
+      ]
+    },
+    "brand_identity": {
+      "name": "illtochill",
+      "vibe": "minimal premium streetwear and therapeutic home d\u00e9cor",
+      "tone": "calm, resilient, grounded, modern",
+      "palette": [
+        "neutral tones",
+        "warm beige",
+        "charcoal",
+        "soft whites"
+      ]
+    },
+    "technical_specs": {
+      "lighting_global": {
+        "style": "diffused natural window light",
+        "temperature": "warm (3200K - 4500K)",
+        "quality": "soft shadows, no harsh contrast, zero surface glare"
+      },
+      "camera_global": {
+        "focal_length": "50mm (human eye perspective)",
+        "shot_type": "medium-long shot",
+        "movement": "slow smooth zoom, steady tripod stabilization",
+        "angle": "slight 15-degree side profile"
+      },
+      "materials": {
+        "canvas": "fine-grain matte cotton, non-reflective surface",
+        "environment": "light oak wood, clean plaster walls, minimal fabric"
+      },
+      "lighting_logic": "soft wrap-around lighting to avoid harsh shadows in the hood area"
+    },
+    "scene_rules": {
+      "poses": [
+        "model adjusting hood",
+        "standing side-by-side (front and back view)",
+        "hands in pouch pocket"
+      ],
+      "environments": [
+        "white studio wall with brown wooden floor",
+        "modern minimal interior"
+      ],
+      "camera_actions": [
+        "medium-range full body shot",
+        "slow tracking shot",
+        "static eye-level"
+      ],
+      "focus_points": [
+        "heavyweight fabric texture",
+        "backprint legibility",
+        "logo embroidery"
+      ]
+    },
+    "guardrails": {
+      "avoid": [
+        "low-res",
+        "glare on canvas",
+        "harsh flash",
+        "overexposed",
+        "neon colors",
+        "camera shake",
+        "anime",
+        "distracting clutter",
+        "motion blur",
+        "text overlays",
+        "cartoon"
+      ],
+      "strict_rule": "The artwork/canvas is the single source of truth; do not alter brushstrokes or colors."
+    }
+  },
+  "summary": {
+    "total_generated": 0,
+    "target": 10
+  },
+  "outputs": [],
+  "prompt_library": {}
+}

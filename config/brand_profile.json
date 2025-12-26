@@ -1,0 +1,33 @@
+{
+  "brand_name": "illtochill",
+  "core_aesthetic": {
+    "vibe": "minimal premium streetwear and therapeutic home décor",
+    "emotional_tone": "calm, resilient, grounded, modern",
+    "color_palette": ["neutral tones", "warm beige", "charcoal", "soft whites"]
+  },
+  "visual_specifications": {
+    "lighting": {
+      "style": "diffused natural window light",
+      "temperature": "warm (3200K - 4500K)",
+      "quality": "soft shadows, no harsh contrast, zero surface glare"
+    },
+    "camera_cinematography": {
+      "focal_length": "50mm (human eye perspective)",
+      "shot_type": "medium-long shot",
+      "movement": "slow smooth zoom, steady tripod stabilization",
+      "angle": "slight 15-degree side profile"
+    },
+    "textures_and_materials": {
+      "canvas": "fine-grain matte cotton, non-reflective surface",
+      "environment": "light oak wood, clean plaster walls, minimal fabric"
+    }
+  },
+  "guardrails": {
+    "avoid": [
+      "cartoon", "anime", "low-res", "overexposed", "harsh flash",
+      "camera shake", "neon colors", "distracting clutter",
+      "text overlays", "glare on canvas", "motion blur"
+    ],
+    "strict_rule": "The artwork/canvas is the single source of truth; do not alter brushstrokes or colors."
+  }
+}

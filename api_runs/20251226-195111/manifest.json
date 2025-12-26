@@ -1,0 +1,238 @@
+{
+  "timestamp": 1766758920.5759795,
+  "intent": {
+    "meta": {
+      "product_name": "Resilience Hoodie",
+      "category": "hoodie",
+      "reference_image_count": 3,
+      "key_features": [
+        "Text: I AM STRONGER THAN THE FLAMES",
+        "Heavyweight cotton fabric",
+        "Backprint clearly visible",
+        "Logo embroidered on chest"
+      ]
+    },
+    "brand_identity": {
+      "name": "illtochill",
+      "vibe": "minimal premium streetwear and therapeutic home d\u00e9cor",
+      "tone": "calm, resilient, grounded, modern",
+      "palette": [
+        "neutral tones",
+        "warm beige",
+        "charcoal",
+        "soft whites"
+      ]
+    },
+    "technical_specs": {
+      "lighting_global": {
+        "style": "diffused natural window light",
+        "temperature": "warm (3200K - 4500K)",
+        "quality": "soft shadows, no harsh contrast, zero surface glare"
+      },
+      "camera_global": {
+        "focal_length": "50mm (human eye perspective)",
+        "shot_type": "medium-long shot",
+        "movement": "slow smooth zoom, steady tripod stabilization",
+        "angle": "slight 15-degree side profile"
+      },
+      "materials": {
+        "canvas": "fine-grain matte cotton, non-reflective surface",
+        "environment": "light oak wood, clean plaster walls, minimal fabric"
+      },
+      "lighting_logic": "soft wrap-around lighting to avoid harsh shadows in the hood area"
+    },
+    "scene_rules": {
+      "poses": [
+        "model adjusting hood",
+        "standing side-by-side (front and back view)",
+        "hands in pouch pocket"
+      ],
+      "environments": [
+        "white studio wall with brown wooden floor",
+        "modern minimal interior"
+      ],
+      "camera_actions": [
+        "medium-range full body shot",
+        "slow tracking shot",
+        "static eye-level"
+      ],
+      "focus_points": [
+        "heavyweight fabric texture",
+        "backprint legibility",
+        "logo embroidery"
+      ]
+    },
+    "guardrails": {
+      "avoid": [
+        "distracting clutter",
+        "low-res",
+        "overexposed",
+        "cartoon",
+        "glare on canvas",
+        "neon colors",
+        "motion blur",
+        "camera shake",
+        "text overlays",
+        "harsh flash",
+        "anime"
+      ],
+      "strict_rule": "The artwork/canvas is the single source of truth; do not alter brushstrokes or colors."
+    }
+  },
+  "outputs": [
+    {
+      "video_id": "f05b9bd8",
+      "prompt_id": "78cdb799",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "api_runs\\20251226-195111\\mock_gen_f05b9bd8.mp4"
+    },
+    {
+      "video_id": "d0b8eef9",
+      "prompt_id": "dbb5463b",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "api_runs\\20251226-195111\\mock_gen_d0b8eef9.mp4"
+    },
+    {
+      "video_id": "d71eef67",
+      "prompt_id": "78cdb799",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "api_runs\\20251226-195111\\mock_gen_d71eef67.mp4"
+    },
+    {
+      "video_id": "bea650c6",
+      "prompt_id": "dbb5463b",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "api_runs\\20251226-195111\\mock_gen_bea650c6.mp4"
+    },
+    {
+      "video_id": "c343860a",
+      "prompt_id": "78cdb799",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "api_runs\\20251226-195111\\mock_gen_c343860a.mp4"
+    },
+    {
+      "video_id": "f449e4bc",
+      "prompt_id": "dbb5463b",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "api_runs\\20251226-195111\\mock_gen_f449e4bc.mp4"
+    },
+    {
+      "video_id": "432b7261",
+      "prompt_id": "78cdb799",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "api_runs\\20251226-195111\\mock_gen_432b7261.mp4"
+    },
+    {
+      "video_id": "dff981bc",
+      "prompt_id": "dbb5463b",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "api_runs\\20251226-195111\\mock_gen_dff981bc.mp4"
+    },
+    {
+      "video_id": "c9c22861",
+      "prompt_id": "dbb5463b",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "api_runs\\20251226-195111\\mock_gen_c9c22861.mp4"
+    },
+    {
+      "video_id": "8f9abee4",
+      "prompt_id": "dbb5463b",
+      "score": {
+        "realism": 0.0,
+        "brand_alignment": 0.0,
+        "product_visibility": 0.0,
+        "motion_quality": 0.0,
+        "overall": 0.0,
+        "notes": [
+          "Guardrail violation detected"
+        ]
+      },
+      "file_path": "api_runs\\20251226-195111\\mock_gen_8f9abee4.mp4"
+    }
+  ],
+  "prompt_library": {
+    "78cdb799": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: distracting clutter, low-res, overexposed, cartoon, glare on canvas, neon colors, motion blur, camera shake, text overlays, harsh flash, anime\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Text: I AM STRONGER THAN THE FLAMES, Heavyweight cotton fabric, Backprint clearly visible, Logo embroidered on chest.\n\ud83c\udfac SCENE: Resilience Hoodie, standing side-by-side (front and back view), modern minimal interior, static eye-level\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: backprint legibility, heavyweight fabric texture",
+    "dbb5463b": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: distracting clutter, low-res, overexposed, cartoon, glare on canvas, neon colors, motion blur, camera shake, text overlays, harsh flash, anime\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Text: I AM STRONGER THAN THE FLAMES, Heavyweight cotton fabric, Backprint clearly visible, Logo embroidered on chest.\n\ud83c\udfac SCENE: Resilience Hoodie, model adjusting hood, white studio wall with brown wooden floor, slow tracking shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: logo embroidery, backprint legibility"
+  }
+}
