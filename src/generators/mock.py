@@ -1,136 +1,176 @@
-import os
-import random
+import base64
+import uuid
 import hashlib
 import logging
+import os
+import time
+import shutil
+import random
 import asyncio
-from typing import List, Optional
-from src.core.models import VideoArtifact, ModelProfile, GenerationOutcome
-from src.generators.base import VideoGenerator
-from src.utils.decorators import smart_retry
 
-logger = logging.getLogger("FashionEngine")
+from runwayml import RunwayML  # Assuming official SDK usage
+
+from src.core.models import ModelProfile, VideoArtifact, TrainingConfig
+from src.generators.base import VideoGenerator
+from src.utils.logger import get_logger # Assuming get_loggernerator was a typo and should be get_logger
+
+# Avoid importing heavy vision/CLIP utilities at module import time; import lazily if needed.
+
+
+logger = get_logger("FashionEngine") # Changed to use get_logger from src.utils.logger
 
 
 class AdvancedMockVideoGenerator(VideoGenerator):
-    OUTPUT_DIR = "outputs"
-    profile = ModelProfile("Gen-Mock-Elite-v3", 4096, True, True)
+    """Lightweight mock generator used for tests and local runs."""
 
-    def __init__(
-        self,
-        failure_rate: float = 0.15,
-        hard_failure_ratio: float = 0.3,
-        min_latency: float = 0.5,
-        max_latency: float = 2.0,
-        calls_per_minute: int = 600, # Increased for async demo
-    ):
+    OUTPUT_DIR = "outputs_mock"
+
+    profile = ModelProfile(
+        name="advanced-mock",
+        max_tokens=0,
+        supports_seed=True,
+        supports_negative_prompt=False,
+        supports_training=True, # Added support for training
+    )
+
+    def __init__(self):
         os.makedirs(self.OUTPUT_DIR, exist_ok=True)
-        self.failure_rate = failure_rate
-        self.hard_failure_ratio = hard_failure_ratio
-        self.min_latency = min_latency
-        self.max_latency = max_latency
 
-        # Simple Rate Limiter State
-        self._call_timestamps = []
-        self._rate_limit = calls_per_minute
-
-        logger.info(
-            f"🔌 [MOCK] Advanced Generator Active | Profile: {self.profile.name} | Error Rate: {int(failure_rate*100)}%"
-        )
-
-    def _check_rate_limit(self):
-        # Note: This simple check isn't thread-safe for threads, but okay for asyncio if single-threaded event loop
-        # For a more robust solution, we'd use a token bucket or similar
-        import time
-        now = time.time()
-        # Remove calls older than 60 seconds
-        self._call_timestamps = [t for t in self._call_timestamps if now - t < 60]
-
-        if len(self._call_timestamps) >= self._rate_limit:
-            return True
-
-        self._call_timestamps.append(now)
-        return False
-
-    def _decide_outcome(self, seed: Optional[int]) -> GenerationOutcome:
-        # Deterministic seeds for testing
-        if seed == 9999:
-            return GenerationOutcome.HARD_FAILURE
-        if seed == 8888:
-            return GenerationOutcome.TRANSIENT_FAILURE
-        if seed == 7777:
-            return GenerationOutcome.RATE_LIMIT
-
-        r = random.random()
-        if r < self.failure_rate:
-            if random.random() < self.hard_failure_ratio:
-                return GenerationOutcome.HARD_FAILURE
-            return GenerationOutcome.TRANSIENT_FAILURE
-
-        return GenerationOutcome.SUCCESS
-
-    @smart_retry(retries=3, delay=1.5)
-    async def generate_async(self, prompt: str, reference_paths: List[str], aspect_ratio: str = "16:9", seed: Optional[int] = None) -> VideoArtifact:
-        # 1. Rate limit
-        if self._check_rate_limit():
-            logger.warning("🔥 [MOCK] 429 Too Many Requests (Simulated)")
-            raise ConnectionError("Rate limit exceeded (429)")
-
-        # 2. Simulate latency (Async)
-        latency = random.triangular(self.min_latency, self.max_latency, self.min_latency + 0.5)
-        await asyncio.sleep(latency)
-
-        # 3. Decide outcome
-        outcome = self._decide_outcome(seed)
-
-        if outcome == GenerationOutcome.HARD_FAILURE:
-            logger.error("❌ [MOCK] 400 Bad Request: Model rejected prompt (Safety filter?)")
-            raise ValueError("Safety filter triggered: Prompt violated content policy.")
-
-        if outcome == GenerationOutcome.TRANSIENT_FAILURE:
-            logger.warning("⚠️ [MOCK] 503 Service Unavailable: GPU overload")
-            raise ConnectionError("Upstream service timeout (503)")
-
-        if outcome == GenerationOutcome.RATE_LIMIT:
-            logger.warning("🔥 [MOCK] 429 Too Many Requests (Forced by Seed)")
-            raise ConnectionError("Rate limit exceeded (429)")
-
-        # 4. Success path
-        video_seed = seed or random.randint(100000, 999999)
-        prompt_id = hashlib.md5(prompt.encode()).hexdigest()[:8]
-        video_id = hashlib.md5(f"{prompt_id}{video_seed}".encode()).hexdigest()[:8]
-
-        filename = f"mock_gen_{video_id}.mp4"
-        output_path = os.path.join(self.OUTPUT_DIR, filename)
-
-        # We can still blocking-write for the mock or make it async if we want to be pure
-        # For simplicity, small blocking write is fine here for a mock
-        file_size_mb = random.uniform(1.5, 5.0)
-        # Using a thread execution for file IO to avoid blocking event loop
-        await asyncio.to_thread(self._write_dummy_file, output_path, file_size_mb)
-
-        actual_duration = round(random.uniform(3.8, 4.2), 2)
-
-        logger.info(f"✅ [MOCK] Generated {filename} ({file_size_mb:.2f}MB) in {latency:.2f}s")
+    def generate(self, prompt, reference_paths, aspect_ratio="16:9", seed=None):
+        prompt_hash = hashlib.md5(prompt.encode("utf-8")).hexdigest()[:8]
+        video_id = f"mock-{prompt_hash}-{int(time.time()*1000)}"
+        filename = os.path.join(self.OUTPUT_DIR, f"{video_id}.mp4")
+        # create a tiny placeholder file to simulate an artifact
+        with open(filename, "wb") as f:
+            f.write(b"MOCKVIDEO")
 
         return VideoArtifact(
-            file_path=output_path,
+            file_path=filename,
             video_id=video_id,
-            seed=video_seed,
-            duration=actual_duration,
-            model_used=self.profile.name,
+            seed=seed if seed else 0,
+            duration=1.0,
+            model_used="advanced-mock",
             prompt=prompt,
-            prompt_id=prompt_id,
-            metadata={
-                "aspect_ratio": aspect_ratio,
-                "simulated_latency": round(latency, 3),
-                "server_node": f"gpu-cluster-{random.randint(1,5)}",
-            },
+            prompt_id=prompt_hash,
+            metadata={"reference_count": len(reference_paths)},
         )
-    
-    def _write_dummy_file(self, path, size_mb):
-        with open(path, "wb") as f:
-            f.write(b"\0" * int(size_mb * 1024 * 1024))
 
-    # Keep synchronous method for backward compatibility if needed, using run_until_complete
-    def generate(self, *args, **kwargs):
-        raise NotImplementedError("Use generate_async instead")
+    async def train_async(self, dataset_path: str, config: TrainingConfig) -> str:
+        """
+        Simulates training with a realistic loss curve and early stopping.
+        """
+        job_id = f"train-mock-{int(time.time())}"
+        logger.info(f"🎓 Starting Simulated Training (Config: lr={config.learning_rate}, rank={config.network_rank})")
+        
+        # Simulation Parameters
+        steps = 20 # Reduced for speed in demo, normally config.max_train_steps
+        current_loss = 2.0
+        min_val_loss = float('inf')
+        patience_counter = 0
+        
+        for step in range(steps):
+             await asyncio.sleep(0.1) # Simulate computation
+             
+             # Simulate loss curve (mostly going down, occasional spike)
+             current_loss *= 0.95 if random.random() > 0.1 else 1.1
+             val_loss = current_loss * (1.1 + (random.random() * 0.1)) # Val loss slightly higher
+             
+             if step % 5 == 0:
+                 logger.info(f"Step {step}/{steps} | Loss: {current_loss:.4f} | Val Loss: {val_loss:.4f}")
+                 
+                 # Early Stopping Check
+                 if val_loss < min_val_loss:
+                     min_val_loss = val_loss
+                     patience_counter = 0
+                 else:
+                     patience_counter += 1
+                     
+                 if patience_counter >= config.early_stopping_patience:
+                    logger.warning(f"🛑 Early Stopping triggered at step {step}. Val Loss did not improve.")
+                    break
+
+        return job_id
+
+
+class RunwayVideoGenerator(VideoGenerator):
+    profile = ModelProfile(
+        name="runway-gen3-alpha",
+        max_tokens=3000,
+        supports_seed=True,
+        supports_negative_prompt=False,  # Gen-3 doesn't support negatives yet
+    )
+
+    def __init__(self):
+        # Initialize client (looks for RUNWAYML_API_SECRET env var)
+        self.client = RunwayML()
+
+    def _encode_image(self, image_path: str) -> str:
+        """Converts local file to Data URI for API transmission."""
+        with open(image_path, "rb") as img_file:
+            encoded_string = base64.b64encode(img_file.read()).decode("utf-8")
+        # Detect mime type roughly (production code should be more robust)
+        ext = image_path.split(".")[-1].lower()
+        mime = "png" if ext == "png" else "jpeg"
+        return f"data:image/{mime};base64,{encoded_string}"
+
+    def generate(self, prompt, reference_paths, aspect_ratio="16:9", seed=None):
+        # 1. Prepare Inputs
+        if not reference_paths:
+            raise ValueError("Runway Gen-3 requires at least one reference image")
+
+        # Gen-3 currently favors the 'first' image as the primary input
+        base64_image = self._encode_image(reference_paths[0])
+
+        logger.info(f"🎨 Submitting job to Runway (Prompt: {prompt[:30]}...)")
+
+        # 2. Submit Task (Async)
+        task = self.client.image_to_video.create(
+            model="gen3a_turbo",  # or 'gen3a_alpha'
+            prompt_image=base64_image,
+            prompt_text=prompt,
+            seed=seed,
+            ratio=aspect_ratio.replace(":", "_"),  # runway uses '16_9' format often
+        )
+
+        task_id = task.id
+        logger.info(f"⏳ Task {task_id} submitted. Polling for results...")
+
+        # 3. Polling Loop (The Waiting Room)
+        # We wait up to 5 minutes (300s)
+        max_retries = 60
+        for _ in range(max_retries):
+            task_status = self.client.tasks.retrieve(task_id)
+            status = task_status.status
+
+            if status == "SUCCEEDED":
+                video_url = task_status.output[0]  # API returns a URL, not a local file
+                break
+            elif status == "FAILED":
+                raise RuntimeError(f"Runway Generation Failed: {task_status.failure}")
+            elif status in ["THROTTLED"]:
+                # Handle rate limits logic here if needed
+                time.sleep(10)
+
+            # Wait 5 seconds before asking again
+            time.sleep(5)
+        else:
+            raise TimeoutError("Video generation timed out after 5 minutes")
+
+        # 4. Download Video (Optional but recommended)
+        # In production, you might just save the URL.
+        # Here we pretend we downloaded it to a local path.
+        # local_filename = download_file(video_url)
+
+        # 5. Return Artifact
+        prompt_hash = hashlib.md5(prompt.encode("utf-8")).hexdigest()[:8]
+
+        return VideoArtifact(
+            file_path=video_url,  # Or local path if downloaded
+            video_id=task_id,
+            seed=seed if seed else 0,
+            duration=5.0,  # Gen-3 is usually 5s or 10s fixed
+            model_used="runway-gen3-alpha",
+            prompt=prompt,
+            prompt_id=prompt_hash,
+            metadata={"remote_url": video_url},
+        )

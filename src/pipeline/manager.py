@@ -1,21 +1,31 @@
+import asyncio
+import hashlib
+import json
 import os
 import time
-import json
-import logging
-import asyncio
 from dataclasses import asdict
-from typing import Optional, List, Tuple
+from typing import List, Optional, Tuple, Set
 
-from src.core.models import GenerationMode, Shot, VideoArtifact, QualityScore
+from src.config import settings
+from src.core.models import (
+    GenerationMode, 
+    Intent, 
+    PipelineResult, 
+    Shot, 
+    VideoArtifact
+)
+from src.engine.adapters import PromptAdapter, RunwayAdapter
 from src.engine.director import CreativeDirector
-from src.engine.adapters import RunwayAdapter
+from src.engine.mutator import ShotMutator
+from src.engine.sanitizer import sanitize_and_repair_prompt
+from src.evaluation.scorer import MockQualityEvaluator, QualityEvaluator
+from src.evaluation.vision import VisionQualityEvaluator
 from src.generators.base import VideoGenerator
 from src.generators.mock import AdvancedMockVideoGenerator
-from src.evaluation.scorer import QualityEvaluator, MockQualityEvaluator
-from src.engine.sanitizer import sanitize_prompt
+from src.generators.integrations import StabilityVideoGenerator, LumaRayGenerator
+from src.utils.logger import get_logger
 
-logger = logging.getLogger("FashionEngine")
-
+logger = get_logger()
 
 class FashionPipeline:
     """
@@ -24,56 +34,105 @@ class FashionPipeline:
 
     def __init__(
         self,
-        generator: Optional[VideoGenerator] = None,
+        generators: Optional[List[VideoGenerator]] = None,
         evaluator: Optional[QualityEvaluator] = None,
-        output_root: str = "outputs",
+        director: Optional[CreativeDirector] = None,
+        adapter: Optional[PromptAdapter] = None,
+        mutator: Optional[ShotMutator] = None,
+        output_root: Optional[str] = None,
     ):
-        # Core engine
-        self.director = CreativeDirector(
-            brand_path="config/brand_profile.json",
-            rules_path="config/category_rules.json",
+        self.output_root = output_root or settings.output_root
+        
+        self.director = director or CreativeDirector(
+            brand_path=settings.brand_profile_path,
+            rules_path=settings.category_rules_path,
         )
-        self.adapter = RunwayAdapter()
+        self.adapter = adapter or RunwayAdapter()
+        self.mutator = mutator or ShotMutator()
+        if settings.enable_vision_evaluator:
+            # Use Vision Evaluator if enabled
+            self.evaluator = evaluator or VisionQualityEvaluator()
+        else:
+            self.evaluator = evaluator or MockQualityEvaluator()
 
-        # Dependency injection
-        self.generator = generator if generator else AdvancedMockVideoGenerator()
-        self.evaluator = evaluator if evaluator else MockQualityEvaluator()
+        # Initialize Generators
+        self.generators = generators or []
+        if not self.generators:
+            # Load default chain based on settings
+            if settings.enable_runway:
+                # Assuming AdvancedMock is our "Runway" placeholder for now inside unit tests or simple usage
+                # unless integrating actual RunwayGenerator if we had it.
+                # For now using AdvancedMock as default if enabled, representing Runway
+                self.generators.append(AdvancedMockVideoGenerator())
+            
+            if settings.enable_stability:
+                self.generators.append(StabilityVideoGenerator())
+            
+            if settings.enable_luma:
+                self.generators.append(LumaRayGenerator())
+            
+            # Fallback if nothing enabled
+            if not self.generators:
+                self.generators.append(AdvancedMockVideoGenerator())
 
-        # Run directory
+        # Run Setup
         run_id = time.strftime("%Y%m%d-%H%M%S")
-        self.run_dir = os.path.join(output_root, run_id)
+        self.run_dir = os.path.join(self.output_root, run_id)
         os.makedirs(self.run_dir, exist_ok=True)
 
-        # Redirect generator output
-        if hasattr(self.generator, "OUTPUT_DIR"):
-            self.generator.OUTPUT_DIR = self.run_dir
+        for gen in self.generators:
+             if hasattr(gen, "OUTPUT_DIR"):
+                 gen.OUTPUT_DIR = self.run_dir
 
-    def run(self, product_name, category, features, images) -> List[Tuple[VideoArtifact, QualityScore, Shot]]:
-        """Synchronous wrapper for run_async"""
-        return asyncio.run(self.run_async(product_name, category, features, images))
-
-    async def run_async(self, product_name, category, features, images):
-        logger.info(f"🚀 Starting Async Pipeline Run for: {product_name}")
-
-        # 1️⃣ Build intent
-        intent = self.director.build_product_intent(
-            product_name=product_name,
-            category=category,
-            key_features=features,
-            image_count=len(images),
+    def run(
+        self,
+        product_name: str,
+        category: str,
+        features: List[str],
+        images: List[str],
+    ) -> List[PipelineResult]:
+        """
+        Synchronous entry point for the pipeline.
+        """
+        return asyncio.run(
+            self.run_async(product_name, category, features, images)
         )
-        logger.info(f"🔑 Intent Hash: {intent.get_hash()}")
 
-        # 2️⃣ Generate shot plan
+    async def _generate_safely(self, generator: VideoGenerator, prompt: str, images: List[str], seed: int) -> VideoArtifact:
+        """Safely run generator in async context (wrapping if needed)"""
+        # If generator has native async, use it (checking if it overrides base which is async wrapper)
+        return await generator.generate_async(prompt, images, seed=str(seed)) # seed as str/int safety depending on impl
+
+    async def run_async(
+        self, 
+        product_name: str, 
+        category: str, 
+        features: List[str], 
+        images: List[str]
+    ) -> List[PipelineResult]:
+        
+        logger.info(f"🚀 Starting Pipeline Run for: {product_name} with {len(self.generators)} generators")
+
+        try:
+            intent = self.director.build_product_intent(
+                product_name=product_name,
+                category=category,
+                key_features=features,
+                image_count=len(images),
+                images=images,
+            )
+        except Exception as e:
+            logger.critical(f"❌ Failed to build intent: {e}")
+            raise
+
         shots = self.director.generate_shots(
             intent,
-            count=3,
+            count=settings.target_videos, # Use target as count base
             mode=GenerationMode.STRICT,
         )
 
-        # SAFETY: never allow empty shots
         if not shots:
-            logger.warning("⚠️ No shots generated. Using fallback shot.")
+            logger.warning("⚠️ No shots generated, using fallback.")
             shots = [
                 Shot(
                     id=1,
@@ -84,152 +143,129 @@ class FashionPipeline:
                 )
             ]
 
-        TARGET_GOOD_VIDEOS = 10
-        QUALITY_THRESHOLD = 7.0
-        MAX_TOTAL_ATTEMPTS = 40
-        CONCURRENCY = 5
-
-        accepted_results = []
-        rejected_results = []
+        accepted: List[PipelineResult] = []
+        rejected: List[PipelineResult] = []
         prompts_map = {}
-        blocked_prompts = set()
+        blocked_prompt_ids: Set[str] = set()
 
-        semaphore = asyncio.Semaphore(CONCURRENCY)
+        semaphore = asyncio.Semaphore(settings.concurrency * len(self.generators)) # Scale semaphore by generators
 
-        async def attempt_generation(shot: Shot, attempt_idx: int):
-            if len(accepted_results) >= TARGET_GOOD_VIDEOS:
-                return None
-
-            raw_prompt = self.adapter.format(intent, shot)
-            prompt = sanitize_prompt(raw_prompt)
-            prompt_id = hash(prompt)
-
-            if prompt_id in blocked_prompts:
-                logger.info("⏭️ Skipping blocked prompt")
-                return None
-
-            async with semaphore:
-                try:
-                    artifact = await self.generator.generate_async(
-                        prompt=prompt,
-                        reference_paths=images,
-                        seed=None,
-                    )
-
-                    prompts_map[artifact.prompt_id] = prompt
-
-                    score = self.evaluator.evaluate(
-                        artifact=artifact,
-                        intent=intent,
-                        shot=shot,
-                        full_prompt=prompt,
-                    )
-
-                    result = {
-                        "artifact": artifact,
-                        "score": score,
-                        "shot": shot,
-                    }
-
-                    if score.overall >= QUALITY_THRESHOLD:
-                         # Thread-safe append in asyncio (it's single threaded event loop)
-                        accepted_results.append(result)
-                        logger.info(
-                            f"✅ Accepted {artifact.video_id} | "
-                            f"Score: {score.overall:.2f} "
-                            f"({len(accepted_results)}/{TARGET_GOOD_VIDEOS})"
-                        )
-                        return result
-                    else:
-                        rejected_results.append(result)
-                        logger.info(
-                            f"❌ Rejected {artifact.video_id} | "
-                            f"Score: {score.overall:.2f}"
-                        )
-                        return None
-
-                except ValueError as e:
-                    # HARD failure → blacklist prompt
-                    logger.error(f"🚫 Blocking prompt due to safety failure: {e}")
-                    blocked_prompts.add(prompt_id)
-                except Exception as e:
-                    logger.warning(f"⚠️ Generation attempt failed: {e}")
-            return None
-
-        # 3️⃣ Resilient generation loop (Parallel)
-        tasks = []
-        # We start by scheduling MAX_TOTAL_ATTEMPTS potentially, or we can do chunks.
-        # Since we have "break" condition (TARGET_GOOD_VIDEOS), scheduling all might act wasteful if we hit target early.
-        # But for simplicity in asyncio without complex queue management, we can schedule batches.
-        
-        # Let's use an approach where we schedule batches until target is met.
         attempts = 0
         shot_index = 0
+
+        # We want to fill accepted list
+        # Strategy: Iterate shots, fan out to ALL generators, collect results
         
-        while len(accepted_results) < TARGET_GOOD_VIDEOS and attempts < MAX_TOTAL_ATTEMPTS:
-            batch_size = min(CONCURRENCY, MAX_TOTAL_ATTEMPTS - attempts)
-            current_batch_tasks = []
+        while len(accepted) < settings.target_videos and attempts < settings.max_attempts:
+            tasks = []
             
-            for _ in range(batch_size):
-                if attempts >= MAX_TOTAL_ATTEMPTS: 
-                    break
-                shot = shots[shot_index % len(shots)]
-                current_batch_tasks.append(attempt_generation(shot, attempts))
-                shot_index += 1
-                attempts += 1
+            # Pick a shot
+            base_shot = shots[shot_index % len(shots)]
+            shot_index += 1
+            attempts += 1 # This counts as one "batch" attempt
             
-            if not current_batch_tasks:
+            raw_prompt = self.adapter.format(intent, base_shot)
+            prompt = sanitize_and_repair_prompt(raw_prompt, attempt=attempts)
+            
+            prompt_hash = hashlib.sha256(f"{prompt}-{base_shot.id}".encode("utf-8")).hexdigest()[:12]
+            
+            # Fan out to all generators
+            for i, gen in enumerate(self.generators):
+                seed = hash((base_shot.id, attempts, i)) % 1_000_000
+                
+                async def run_one(g=gen, p=prompt, s=base_shot, seed=seed, h=prompt_hash):
+                    async with semaphore:
+                        try:
+                            # Start timer
+                            t0 = time.time()
+                            artifact = await g.generate_async(p, images, seed=seed)
+                            latency = time.time() - t0
+                            artifact.metadata["latency"] = latency
+                            return (p, h, s, artifact)
+                        except Exception as e:
+                            logger.error(f"Gen {g.profile.name} failed: {e}")
+                            return (p, h, s, e)
+
+                tasks.append(run_one())
+
+            # Execute Fan-Out
+            if not tasks:
                 break
                 
-            await asyncio.gather(*current_batch_tasks)
+            results = await asyncio.gather(*tasks)
 
-        # 4️⃣ Graceful fallback
-        if not accepted_results:
-            logger.warning(
-                "⚠️ No videos met quality threshold. "
-                "Falling back to best available results."
-            )
-            rejected_results.sort(
-                key=lambda r: r["score"].overall, reverse=True
-            )
-            accepted_results = rejected_results[:TARGET_GOOD_VIDEOS]
+            # Process Results
+            for prompt, prompt_id, shot, result in results:
+                if isinstance(result, Exception):
+                    continue
 
-        # 5️⃣ Final ranking
-        accepted_results.sort(
-            key=lambda r: r["score"].overall, reverse=True
-        )
+                artifact = result
+                prompts_map[artifact.prompt_id] = prompt
 
-        # 6️⃣ Save manifest
-        self._save_manifest(intent, accepted_results, prompts_map)
+                score = self.evaluator.evaluate(
+                    artifact=artifact,
+                    intent=intent,
+                    shot=shot,
+                    full_prompt=prompt,
+                    reference_images=images,
+                )
+
+                pipeline_result = PipelineResult(
+                    artifact=artifact,
+                    score=score,
+                    shot=shot
+                )
+
+                if score.overall >= settings.quality_threshold:
+                    accepted.append(pipeline_result)
+                    logger.info(
+                        f"✅ Accepted {artifact.video_id} [{artifact.model_used}] "
+                        f"({score.overall:.2f}) "
+                        f"{len(accepted)}/{settings.target_videos}"
+                    )
+                else:
+                    rejected.append(pipeline_result)
+                    logger.info(
+                        f"❌ Rejected {artifact.video_id} [{artifact.model_used}] "
+                        f"({score.overall:.2f})"
+                    )
+
+        # Fallback Strategy
+        if not accepted:
+            logger.warning("⚠️ Falling back to best rejected results.")
+            rejected.sort(key=lambda r: r.score.overall, reverse=True)
+            accepted = rejected[:settings.target_videos]
+
+        accepted.sort(key=lambda r: r.score.overall, reverse=True)
+
+        self._save_manifest(intent, accepted, prompts_map)
 
         logger.info(
-            f"🏁 Pipeline complete | "
-            f"Returned {len(accepted_results)} videos | "
-            f"Attempts: {attempts}"
+            f"🏁 Pipeline complete | Accepted: {len(accepted)} | Active Generators: {len(self.generators)}"
         )
 
-        return [
-            (r["artifact"], r["score"], r["shot"])
-            for r in accepted_results
-        ]
+        return accepted
 
-    def _save_manifest(self, intent, results, prompts_map):
+    def _save_manifest(self, intent: Intent, results: List[PipelineResult], prompts_map: dict):
         manifest = {
             "timestamp": time.time(),
             "intent": asdict(intent),
             "outputs": [
                 {
-                    "video_id": r["artifact"].video_id,
-                    "prompt_id": r["artifact"].prompt_id,
-                    "score": asdict(r["score"]),
-                    "file_path": r["artifact"].file_path,
+                    "video_id": r.artifact.video_id,
+                    "model": r.artifact.model_used,
+                    "prompt_id": r.artifact.prompt_id,
+                    "score": asdict(r.score),
+                    "file_path": r.artifact.file_path,
                 }
                 for r in results
             ],
             "prompt_library": prompts_map,
         }
 
-        with open(os.path.join(self.run_dir, "manifest.json"), "w") as f:
-            json.dump(manifest, f, indent=2)
-
-        logger.info(f"✅ Manifest saved to {self.run_dir}")
+        try:
+            with open(os.path.join(self.run_dir, "manifest.json"), "w") as f:
+                json.dump(manifest, f, indent=2)
+            logger.info(f"✅ Manifest saved to {self.run_dir}")
+        except IOError as e:
+            logger.error(f"Failed to save manifest: {e}")

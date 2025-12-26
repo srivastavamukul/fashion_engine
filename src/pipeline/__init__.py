@@ -1,1 +1,1 @@
-from .manager import FashionPipeline
+from .manager import FashionPipeline  # noqa: F401

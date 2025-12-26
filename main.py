@@ -1,5 +1,6 @@
-import logging
 import asyncio
+import logging
+
 from src.pipeline.manager import FashionPipeline
 from src.utils.logger import setup_logging
 
@@ -7,28 +8,36 @@ from src.utils.logger import setup_logging
 logger = setup_logging()
 
 async def main():
+    """
+    Main entry point for the Fashion Engine.
+    """
     # 1. Initialize
-    engine = FashionPipeline(output_root="campaign_runs")
+    # Config is handled internally via settings, can be overridden here if needed
+    engine = FashionPipeline()
 
-    # 2. Input Data (Simulating UI)
+    # 2. Input Data (Simulating UI or API Request)
     inputs = {
         "product_name": "Resilience Hoodie",
         "category": "hoodie",
         "features": ["Text: 'I AM STRONGER'", "Logo on chest"],
-        "images": ["uploads/front.jpg"] # Ensure these exist or mock them
+        "images": ["uploads/front.jpg"], 
     }
 
     # 3. Execute
     try:
-        print("🚀 Starting Engine...")
+        logger.info("🚀 Starting Engine Main Loop...")
         winners = await engine.run_async(**inputs)
-        
-        print("\n🏆 FINAL SELECTION:")
-        for artifact, score, _ in winners:
-            print(f"Video: {artifact.file_path} | Score: {score.overall}")
-            
+
+        logger.info("🏆 FINAL SELECTION:")
+        for res in winners:
+            logger.info(f"Video: {res.artifact.file_path} | Score: {res.score.overall}")
+
     except Exception as e:
-        logging.critical(f"🔥 Critical Failure: {e}")
+        logger.critical(f"🔥 Critical Failure: {e}", exc_info=True)
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("Captured KeyboardInterrupt. Exiting...")

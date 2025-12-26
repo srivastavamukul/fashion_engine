@@ -1,14 +1,13 @@
 import logging
 import re
+from typing import Optional
 
 logger = logging.getLogger("FashionEngine")
 
-# Words that are dangerous ONLY if used literally
-SOFT_RISK_TERMS = [
-    "fire", "flames", "burn", "explosion", "weapon", "blood"
-]
+# Soft-risk terms that may be metaphorical
+SOFT_RISK_TERMS = ["fire", "flames", "burn", "explosion", "weapon", "blood"]
 
-# Phrases that are SAFE in branding / fashion / metaphorical context
+# Explicitly safe fashion / branding phrases
 SAFE_FASHION_PHRASES = [
     "stronger than the flames",
     "fire within",
@@ -16,34 +15,69 @@ SAFE_FASHION_PHRASES = [
     "ignite confidence",
 ]
 
-def sanitize_prompt(prompt: str) -> str:
+# Literal physical action indicators (real risk)
+HARD_ACTION_TERMS = [
+    "explode",
+    "burning object",
+    "fire attack",
+    "weapon use",
+    "blood spill",
+]
+
+
+def sanitize_and_repair_prompt(
+    prompt: str,
+    *,
+    attempt: int = 1,
+    max_attempts: int = 3,
+) -> str:
+    """
+    Safety-aware prompt sanitizer + repair engine.
+    Attempt 1: Allow metaphors
+    Attempt 2: Soft repair
+    Attempt 3: Hard repair
+    """
+
     lowered = prompt.lower()
 
-    # 1️⃣ Explicit allowlist check (highest priority)
+    # 1️⃣ Explicit allow-list (highest priority)
     for phrase in SAFE_FASHION_PHRASES:
         if phrase in lowered:
-            return prompt  # Do NOT sanitize
+            return prompt
 
-    # 2️⃣ Check for soft risk terms used literally
-    risk_hits = []
-    for word in SOFT_RISK_TERMS:
-        if re.search(rf"\b{word}\b", lowered):
-            risk_hits.append(word)
+    # 2️⃣ Detect soft-risk terms
+    risk_hits = [word for word in SOFT_RISK_TERMS if re.search(rf"\b{word}\b", lowered)]
 
-    # 3️⃣ If risk terms exist but NO physical action verbs → allow
+    # 3️⃣ Metaphorical usage → allow
     if risk_hits:
-        if not any(v in lowered for v in ["explode", "burning object", "fire attack"]):
+        if not any(action in lowered for action in HARD_ACTION_TERMS):
             logger.info("🟢 Metaphorical language detected, allowing prompt.")
             return prompt
 
-    # 4️⃣ HARD SANITIZATION (only if genuinely risky)
+    # 4️⃣ Attempt-based repair strategy
     if risk_hits:
-        logger.warning("⚠️ Prompt sanitized due to safety risk")
-        return re.sub(
-            r"\b(" + "|".join(SOFT_RISK_TERMS) + r")\b",
-            "energy",
-            prompt,
-            flags=re.IGNORECASE
-        )
+        if attempt == 1:
+            logger.warning("⚠️ Soft-risk detected, attempting light repair.")
+            return prompt  # allow first attempt (let model decide)
+
+        if attempt == 2:
+            logger.warning("🟡 Applying soft repair.")
+            return re.sub(
+                r"\b(" + "|".join(SOFT_RISK_TERMS) + r")\b",
+                "energy",
+                prompt,
+                flags=re.IGNORECASE,
+            )
+
+        if attempt >= 3:
+            logger.warning("🔴 Applying hard repair.")
+            repaired = re.sub(
+                r"\b(" + "|".join(SOFT_RISK_TERMS) + r")\b",
+                "inspiration",
+                prompt,
+                flags=re.IGNORECASE,
+            )
+            repaired = repaired.replace("STRONGER THAN", "a calm reflection of")
+            return repaired
 
     return prompt

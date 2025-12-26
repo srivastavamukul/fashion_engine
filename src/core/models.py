@@ -1,6 +1,8 @@
-from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional
+from dataclasses import dataclass, field, asdict
 from enum import Enum
+from typing import Any, Dict, List, Optional
+import hashlib
+import json
 
 class GenerationMode(Enum):
     STRICT = "strict"
@@ -18,6 +20,7 @@ class ModelProfile:
     max_tokens: int
     supports_seed: bool
     supports_negative_prompt: bool
+    supports_training: bool = False
 
 @dataclass(frozen=True)
 class BrandIdentity:
@@ -50,6 +53,7 @@ class IntentMeta:
     product_name: str
     category: str
     reference_image_count: int
+    reference_image_paths: List[str]  # Added for tracking input images
     key_features: List[str]
 
 @dataclass(frozen=True)
@@ -61,9 +65,6 @@ class Intent:
     guardrails: Guardrails
 
     def get_hash(self) -> str:
-        import json
-        import hashlib
-        from dataclasses import asdict
         json_str = json.dumps(asdict(self), sort_keys=True)
         return hashlib.sha256(json_str.encode("utf-8")).hexdigest()[:16]
 
@@ -92,6 +93,24 @@ class QualityScore:
     realism: float
     brand_alignment: float
     product_visibility: float
+    visual_consistency: float  # Added for input fidelity
     motion_quality: float
     overall: float
     notes: List[str] = field(default_factory=list)
+
+@dataclass(frozen=True)
+class PipelineResult:
+    """Enriches the output tuple into a proper strong type"""
+    artifact: VideoArtifact
+    score: QualityScore
+    shot: Shot
+
+@dataclass(frozen=True)
+class TrainingConfig:
+    trigger_word: str
+    learning_rate: float = 1e-4
+    max_train_steps: int = 2000
+    batch_size: int = 1
+    network_rank: int = 128
+    early_stopping_patience: int = 5
+    save_every: int = 500

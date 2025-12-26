@@ -1,12 +1,12 @@
 import json
 import logging
-from src.core.models import (
-    Intent, IntentMeta, BrandIdentity, TechnicalSpecs, 
-    SceneRules, Guardrails, Shot, GenerationMode
-)
 import random
 
+from src.core.models import (BrandIdentity, GenerationMode, Guardrails, Intent,
+                             IntentMeta, SceneRules, Shot, TechnicalSpecs)
+
 logger = logging.getLogger("FashionEngine")
+
 
 class CreativeDirector:
     FALLBACK_RULES = {
@@ -14,7 +14,7 @@ class CreativeDirector:
         "environments": ["Neutral studio background"],
         "camera": ["Static medium shot"],
         "focus_points": ["Overall product visibility"],
-        "lighting_logic": "Balanced studio lighting"
+        "lighting_logic": "Balanced studio lighting",
     }
 
     def __init__(self, brand_path, rules_path, strict_mode=True):
@@ -33,7 +33,12 @@ class CreativeDirector:
             return {}
 
     def _validate_brand_dna(self):
-        required = ["brand_name", "core_aesthetic", "visual_specifications", "guardrails"]
+        required = [
+            "brand_name",
+            "core_aesthetic",
+            "visual_specifications",
+            "guardrails",
+        ]
         for key in required:
             if key not in self.brand_dna and self.strict:
                 raise ValueError(f"❌ Malformed Brand DNA: Missing '{key}'")
@@ -46,7 +51,8 @@ class CreativeDirector:
         product_name: str,
         category: str,
         key_features: list[str] | None = None,
-        image_count: int = 1
+        image_count: int = 1,
+        images: list[str] | None = None,
     ) -> Intent:
 
         cat_key = category.lower()
@@ -64,8 +70,9 @@ class CreativeDirector:
         meta = IntentMeta(
             product_name=product_name,
             category=category,
-            reference_image_count=image_count,
-            key_features=key_features or []
+            reference_image_count=len(images) if images else image_count,
+            reference_image_paths=images or [],
+            key_features=key_features or [],
         )
 
         # 3️⃣ Brand identity
@@ -74,7 +81,7 @@ class CreativeDirector:
             name=self.brand_dna["brand_name"],
             vibe=aesthetic["vibe"],
             tone=aesthetic["emotional_tone"],
-            palette=aesthetic["color_palette"]
+            palette=aesthetic["color_palette"],
         )
 
         # 4️⃣ Technical specs
@@ -83,29 +90,27 @@ class CreativeDirector:
             lighting_global=visual["lighting"],
             camera_global=visual["camera_cinematography"],
             materials=visual["textures_and_materials"],
-            lighting_logic=raw_rules.get(
-                "lighting_logic",
-                "Balanced studio lighting"
-            )
+            lighting_logic=raw_rules.get("lighting_logic", "Balanced studio lighting"),
         )
 
         # 5️⃣ Scene rules
         scene = SceneRules(
             poses=raw_rules.get("poses", self.FALLBACK_RULES["poses"]),
-            environments=raw_rules.get("environments", self.FALLBACK_RULES["environments"]),
+            environments=raw_rules.get(
+                "environments", self.FALLBACK_RULES["environments"]
+            ),
             camera_actions=raw_rules.get("camera", self.FALLBACK_RULES["camera"]),
-            focus_points=raw_rules.get("focus_points", self.FALLBACK_RULES["focus_points"])
+            focus_points=raw_rules.get(
+                "focus_points", self.FALLBACK_RULES["focus_points"]
+            ),
         )
 
         # 6️⃣ Guardrails
         guard = Guardrails(
             avoid=list(
-                set(
-                    raw_rules.get("avoid", []) +
-                    self.brand_dna["guardrails"]["avoid"]
-                )
+                set(raw_rules.get("avoid", []) + self.brand_dna["guardrails"]["avoid"])
             ),
-            strict_rule=self.brand_dna["guardrails"]["strict_rule"]
+            strict_rule=self.brand_dna["guardrails"]["strict_rule"],
         )
 
         # 7️⃣ FULL INTENT (THIS WAS MISSING)
@@ -114,10 +119,12 @@ class CreativeDirector:
             brand_identity=brand,
             technical_specs=tech,
             scene_rules=scene,
-            guardrails=guard
+            guardrails=guard,
         )
 
-    def generate_shots(self, intent: Intent, count=3, mode=GenerationMode.STRICT) -> list[Shot]:
+    def generate_shots(
+        self, intent: Intent, count=3, mode=GenerationMode.STRICT
+    ) -> list[Shot]:
         shots: list[Shot] = []
         poses = intent.scene_rules.poses or self.FALLBACK_RULES["poses"]
         envs = intent.scene_rules.environments or self.FALLBACK_RULES["environments"]
@@ -129,7 +136,11 @@ class CreativeDirector:
             env = random.choice(envs)
             cam = random.choice(cams)
             # pick up to 2 focus points
-            focus = random.sample(focuses, min(2, len(focuses))) if focuses else ["Overall product visibility"]
+            focus = (
+                random.sample(focuses, min(2, len(focuses)))
+                if focuses
+                else ["Overall product visibility"]
+            )
 
             shots.append(
                 Shot(

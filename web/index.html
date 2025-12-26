@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Engine | AI Video Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">ANTIGRAVITY <span>FASHION</span></div>
+        <nav>
+            <a href="#" class="active">Generate</a>
+            <a href="#">Gallery</a>
+            <a href="#">Settings</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-input">
+            <div class="input-panel">
+                <h1>Create Campaign</h1>
+                <p>Generate high-fidelity fashion videos from product images.</p>
+
+                <form id="generator-form">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="product_name" value="Resilience Hoodie" placeholder="e.g. Summer Dress">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="category">
+                            <option value="hoodie">Hoodie</option>
+                            <option value="dress">Dress</option>
+                            <option value="sneakers">Sneakers</option>
+                            <option value="accessory">Accessory</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Key Features (comma separated)</label>
+                        <input type="text" id="features" value="Logo on chest, Text: 'STRONGER'" placeholder="Silk texture, bright red...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reference Image</label>
+                        <div class="dropzone" id="dropzone">
+                            <span id="dropzone-text">Click or Drag Image Here</span>
+                            <input type="file" id="image-upload" accept="image/*" hidden>
+                        </div>
+                        <div id="image-preview" class="hidden"></div>
+                    </div>
+
+                    <button type="submit" id="generate-btn">
+                        <span class="btn-text">GENERATE CAMPAIGN</span>
+                        <div class="spinner hidden"></div>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="status-panel hidden" id="status-panel">
+                <div class="status-indicator">
+                    <div class="loader-ring"></div>
+                    <h2 id="status-text">Initializing...</h2>
+                </div>
+                <div class="log-stream" id="log-stream">
+                    <!-- Logs injected here -->
+                    <div class="log-item">Ready to start.</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="results-grid" id="results-grid">
+            <!-- Results injected here -->
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

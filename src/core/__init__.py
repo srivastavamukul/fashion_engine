@@ -1,14 +1,5 @@
-from .models import (
-    Intent, 
-    IntentMeta, 
-    BrandIdentity, 
-    TechnicalSpecs, 
-    SceneRules, 
-    Guardrails, 
-    Shot, 
-    VideoArtifact, 
-    QualityScore, 
-    GenerationMode,
-    GenerationOutcome, 
-    ModelProfile
-)
+# flake8: noqa
+from .models import (BrandIdentity, GenerationMode, GenerationOutcome,
+                     Guardrails, Intent, IntentMeta, ModelProfile,
+                     QualityScore, SceneRules, Shot, TechnicalSpecs,
+                     VideoArtifact)

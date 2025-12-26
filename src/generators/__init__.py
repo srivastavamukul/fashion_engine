@@ -1,2 +1,2 @@
-from .base import VideoGenerator
-from .mock import AdvancedMockVideoGenerator
+from .base import VideoGenerator  # noqa: F401
+from .mock import AdvancedMockVideoGenerator  # noqa: F401

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: fashion_engine
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist generated artifacts
+      - ./api_runs:/app/api_runs
+      # Persist the SQLite database
+      - ./jobs.db:/app/jobs.db
+      # Persist uploads
+      - ./uploads:/app/uploads
+      # Bind mount source for dev (optional, remove for prod)
+      # - ./src:/app/src
+    environment:
+      - FASHION_API_HOST=0.0.0.0
+      - FASHION_API_PORT=8000
+      - FASHION_LOG_LEVEL=INFO
+      # - FASHION_API_KEY=your-secure-key-here
+    restart: unless-stopped
