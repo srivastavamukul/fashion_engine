@@ -68,6 +68,8 @@ form.addEventListener('submit', async (e) => {
     spinner.classList.remove('hidden');
 
     statusPanel.classList.remove('hidden');
+    const loaderRing = document.querySelector('.loader-ring');
+    if (loaderRing) loaderRing.style.display = 'block';
     resultsGrid.innerHTML = ""; // Clear old results
     addLog("🚀 Submitting job...");
 
@@ -172,4 +174,6 @@ function resetUI() {
     generateBtn.disabled = false;
     btnText.textContent = "GENERATE CAMPAIGN";
     spinner.classList.add('hidden');
+    const loaderRing = document.querySelector('.loader-ring');
+    if (loaderRing) loaderRing.style.display = 'none';
 }

@@ -1,0 +1,314 @@
+{
+  "timestamp": 1766786872.3654225,
+  "intent": {
+    "meta": {
+      "product_name": "Resilience Hoodie",
+      "category": "hoodie",
+      "reference_image_count": 0,
+      "reference_image_paths": [],
+      "key_features": [
+        "Logo on chest",
+        "Text: 'STRONGER'"
+      ]
+    },
+    "brand_identity": {
+      "name": "illtochill",
+      "vibe": "minimal premium streetwear and therapeutic home d\u00e9cor",
+      "tone": "calm, resilient, grounded, modern",
+      "palette": [
+        "neutral tones",
+        "warm beige",
+        "charcoal",
+        "soft whites"
+      ]
+    },
+    "technical_specs": {
+      "lighting_global": {
+        "style": "diffused natural window light",
+        "temperature": "warm (3200K - 4500K)",
+        "quality": "soft shadows, no harsh contrast, zero surface glare"
+      },
+      "camera_global": {
+        "focal_length": "50mm (human eye perspective)",
+        "shot_type": "medium-long shot",
+        "movement": "slow smooth zoom, steady tripod stabilization",
+        "angle": "slight 15-degree side profile"
+      },
+      "materials": {
+        "canvas": "fine-grain matte cotton, non-reflective surface",
+        "environment": "light oak wood, clean plaster walls, minimal fabric"
+      },
+      "lighting_logic": "soft wrap-around lighting to avoid harsh shadows in the hood area"
+    },
+    "scene_rules": {
+      "poses": [
+        "model adjusting hood",
+        "standing side-by-side (front and back view)",
+        "hands in pouch pocket"
+      ],
+      "environments": [
+        "white studio wall with brown wooden floor",
+        "modern minimal interior"
+      ],
+      "camera_actions": [
+        "medium-range full body shot",
+        "slow tracking shot",
+        "static eye-level"
+      ],
+      "focus_points": [
+        "heavyweight fabric texture",
+        "backprint legibility",
+        "logo embroidery"
+      ]
+    },
+    "guardrails": {
+      "avoid": [
+        "camera shake",
+        "low-res",
+        "glare on canvas",
+        "overexposed",
+        "harsh flash",
+        "cartoon",
+        "anime",
+        "text overlays",
+        "motion blur",
+        "distracting clutter",
+        "neon colors"
+      ],
+      "strict_rule": "The artwork/canvas is the single source of truth; do not alter brushstrokes or colors."
+    }
+  },
+  "outputs": [
+    {
+      "video_id": "mock-00f3a9d4-1766786872347",
+      "model": "advanced-mock",
+      "prompt_id": "00f3a9d4",
+      "score": {
+        "realism": 8.0,
+        "brand_alignment": 8.3,
+        "product_visibility": 8.2,
+        "visual_consistency": 6.0,
+        "motion_quality": 6.5,
+        "overall": 8.12,
+        "notes": [
+          "Stable and realistic motion",
+          "Brand vibe reflected in scene description",
+          "Color palette aligned with brand identity",
+          "Logo visibility emphasized",
+          "No reference images provided for consistency check",
+          "Motion felt slightly rushed",
+          "Camera movement felt calm and controlled"
+        ]
+      },
+      "file_path": "api_runs\\20251227-033745\\mock-00f3a9d4-1766786872347.mp4"
+    },
+    {
+      "video_id": "mock-7f6e18c8-1766786872351",
+      "model": "advanced-mock",
+      "prompt_id": "7f6e18c8",
+      "score": {
+        "realism": 8.0,
+        "brand_alignment": 8.3,
+        "product_visibility": 8.2,
+        "visual_consistency": 6.0,
+        "motion_quality": 6.5,
+        "overall": 8.12,
+        "notes": [
+          "Stable and realistic motion",
+          "Brand vibe reflected in scene description",
+          "Color palette aligned with brand identity",
+          "Logo visibility emphasized",
+          "No reference images provided for consistency check",
+          "Motion felt slightly rushed",
+          "Camera movement felt calm and controlled"
+        ]
+      },
+      "file_path": "api_runs\\20251227-033745\\mock-7f6e18c8-1766786872351.mp4"
+    },
+    {
+      "video_id": "mock-84ed3408-1766786872356",
+      "model": "advanced-mock",
+      "prompt_id": "84ed3408",
+      "score": {
+        "realism": 8.0,
+        "brand_alignment": 8.3,
+        "product_visibility": 8.2,
+        "visual_consistency": 6.0,
+        "motion_quality": 6.5,
+        "overall": 8.12,
+        "notes": [
+          "Stable and realistic motion",
+          "Brand vibe reflected in scene description",
+          "Color palette aligned with brand identity",
+          "Logo visibility emphasized",
+          "No reference images provided for consistency check",
+          "Motion felt slightly rushed",
+          "Camera movement felt calm and controlled"
+        ]
+      },
+      "file_path": "api_runs\\20251227-033745\\mock-84ed3408-1766786872356.mp4"
+    },
+    {
+      "video_id": "mock-d713c94b-1766786872344",
+      "model": "advanced-mock",
+      "prompt_id": "d713c94b",
+      "score": {
+        "realism": 8.0,
+        "brand_alignment": 8.3,
+        "product_visibility": 8.2,
+        "visual_consistency": 6.0,
+        "motion_quality": 6.0,
+        "overall": 8.02,
+        "notes": [
+          "Stable and realistic motion",
+          "Brand vibe reflected in scene description",
+          "Color palette aligned with brand identity",
+          "Logo visibility emphasized",
+          "No reference images provided for consistency check",
+          "Motion felt slightly rushed"
+        ]
+      },
+      "file_path": "api_runs\\20251227-033745\\mock-d713c94b-1766786872344.mp4"
+    },
+    {
+      "video_id": "mock-ad0957ab-1766786872358",
+      "model": "advanced-mock",
+      "prompt_id": "ad0957ab",
+      "score": {
+        "realism": 8.0,
+        "brand_alignment": 8.3,
+        "product_visibility": 8.2,
+        "visual_consistency": 6.0,
+        "motion_quality": 6.0,
+        "overall": 8.02,
+        "notes": [
+          "Stable and realistic motion",
+          "Brand vibe reflected in scene description",
+          "Color palette aligned with brand identity",
+          "Logo visibility emphasized",
+          "No reference images provided for consistency check",
+          "Motion felt slightly rushed"
+        ]
+      },
+      "file_path": "api_runs\\20251227-033745\\mock-ad0957ab-1766786872358.mp4"
+    },
+    {
+      "video_id": "mock-40dec9b6-1766786872360",
+      "model": "advanced-mock",
+      "prompt_id": "40dec9b6",
+      "score": {
+        "realism": 8.0,
+        "brand_alignment": 8.3,
+        "product_visibility": 8.2,
+        "visual_consistency": 6.0,
+        "motion_quality": 6.0,
+        "overall": 8.02,
+        "notes": [
+          "Stable and realistic motion",
+          "Brand vibe reflected in scene description",
+          "Color palette aligned with brand identity",
+          "Logo visibility emphasized",
+          "No reference images provided for consistency check",
+          "Motion felt slightly rushed"
+        ]
+      },
+      "file_path": "api_runs\\20251227-033745\\mock-40dec9b6-1766786872360.mp4"
+    },
+    {
+      "video_id": "mock-7fd3861a-1766786872341",
+      "model": "advanced-mock",
+      "prompt_id": "7fd3861a",
+      "score": {
+        "realism": 8.0,
+        "brand_alignment": 8.3,
+        "product_visibility": 7.5,
+        "visual_consistency": 6.0,
+        "motion_quality": 6.0,
+        "overall": 7.88,
+        "notes": [
+          "Stable and realistic motion",
+          "Brand vibe reflected in scene description",
+          "Color palette aligned with brand identity",
+          "No reference images provided for consistency check",
+          "Motion felt slightly rushed"
+        ]
+      },
+      "file_path": "api_runs\\20251227-033745\\mock-7fd3861a-1766786872341.mp4"
+    },
+    {
+      "video_id": "mock-42abb4f9-1766786872349",
+      "model": "advanced-mock",
+      "prompt_id": "42abb4f9",
+      "score": {
+        "realism": 8.0,
+        "brand_alignment": 8.3,
+        "product_visibility": 7.5,
+        "visual_consistency": 6.0,
+        "motion_quality": 6.0,
+        "overall": 7.88,
+        "notes": [
+          "Stable and realistic motion",
+          "Brand vibe reflected in scene description",
+          "Color palette aligned with brand identity",
+          "No reference images provided for consistency check",
+          "Motion felt slightly rushed"
+        ]
+      },
+      "file_path": "api_runs\\20251227-033745\\mock-42abb4f9-1766786872349.mp4"
+    },
+    {
+      "video_id": "mock-bda09fd3-1766786872353",
+      "model": "advanced-mock",
+      "prompt_id": "bda09fd3",
+      "score": {
+        "realism": 8.0,
+        "brand_alignment": 8.3,
+        "product_visibility": 7.5,
+        "visual_consistency": 6.0,
+        "motion_quality": 6.0,
+        "overall": 7.88,
+        "notes": [
+          "Stable and realistic motion",
+          "Brand vibe reflected in scene description",
+          "Color palette aligned with brand identity",
+          "No reference images provided for consistency check",
+          "Motion felt slightly rushed"
+        ]
+      },
+      "file_path": "api_runs\\20251227-033745\\mock-bda09fd3-1766786872353.mp4"
+    },
+    {
+      "video_id": "mock-d4989212-1766786872363",
+      "model": "advanced-mock",
+      "prompt_id": "d4989212",
+      "score": {
+        "realism": 8.0,
+        "brand_alignment": 8.3,
+        "product_visibility": 7.5,
+        "visual_consistency": 6.0,
+        "motion_quality": 6.0,
+        "overall": 7.88,
+        "notes": [
+          "Stable and realistic motion",
+          "Brand vibe reflected in scene description",
+          "Color palette aligned with brand identity",
+          "No reference images provided for consistency check",
+          "Motion felt slightly rushed"
+        ]
+      },
+      "file_path": "api_runs\\20251227-033745\\mock-d4989212-1766786872363.mp4"
+    }
+  ],
+  "prompt_library": {
+    "7fd3861a": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: camera shake, low-res, glare on canvas, overexposed, harsh flash, cartoon, anime, text overlays, motion blur, distracting clutter, neon colors\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Logo on chest, Text: 'STRONGER'.\n\ud83c\udfac SCENE: Resilience Hoodie, hands in pouch pocket, white studio wall with brown wooden floor, static eye-level\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: heavyweight fabric texture, backprint legibility",
+    "d713c94b": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: camera shake, low-res, glare on canvas, overexposed, harsh flash, cartoon, anime, text overlays, motion blur, distracting clutter, neon colors\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Logo on chest, Text: 'STRONGER'.\n\ud83c\udfac SCENE: Resilience Hoodie, hands in pouch pocket, modern minimal interior, medium-range full body shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: backprint legibility, logo embroidery",
+    "00f3a9d4": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: camera shake, low-res, glare on canvas, overexposed, harsh flash, cartoon, anime, text overlays, motion blur, distracting clutter, neon colors\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Logo on chest, Text: 'STRONGER'.\n\ud83c\udfac SCENE: Resilience Hoodie, hands in pouch pocket, white studio wall with brown wooden floor, slow tracking shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: logo embroidery, heavyweight fabric texture",
+    "42abb4f9": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: camera shake, low-res, glare on canvas, overexposed, harsh flash, cartoon, anime, text overlays, motion blur, distracting clutter, neon colors\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Logo on chest, Text: 'STRONGER'.\n\ud83c\udfac SCENE: Resilience Hoodie, hands in pouch pocket, white studio wall with brown wooden floor, static eye-level\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: backprint legibility, heavyweight fabric texture",
+    "7f6e18c8": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: camera shake, low-res, glare on canvas, overexposed, harsh flash, cartoon, anime, text overlays, motion blur, distracting clutter, neon colors\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Logo on chest, Text: 'STRONGER'.\n\ud83c\udfac SCENE: Resilience Hoodie, model adjusting hood, white studio wall with brown wooden floor, slow tracking shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: heavyweight fabric texture, logo embroidery",
+    "bda09fd3": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: camera shake, low-res, glare on canvas, overexposed, harsh flash, cartoon, anime, text overlays, motion blur, distracting clutter, neon colors\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Logo on chest, Text: 'STRONGER'.\n\ud83c\udfac SCENE: Resilience Hoodie, standing side-by-side (front and back view), modern minimal interior, medium-range full body shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: heavyweight fabric texture, backprint legibility",
+    "84ed3408": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: camera shake, low-res, glare on canvas, overexposed, harsh flash, cartoon, anime, text overlays, motion blur, distracting clutter, neon colors\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Logo on chest, Text: 'STRONGER'.\n\ud83c\udfac SCENE: Resilience Hoodie, standing side-by-side (front and back view), white studio wall with brown wooden floor, slow tracking shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: backprint legibility, logo embroidery",
+    "ad0957ab": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: camera shake, low-res, glare on canvas, overexposed, harsh flash, cartoon, anime, text overlays, motion blur, distracting clutter, neon colors\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Logo on chest, Text: 'STRONGER'.\n\ud83c\udfac SCENE: Resilience Hoodie, hands in pouch pocket, white studio wall with brown wooden floor, medium-range full body shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: heavyweight fabric texture, logo embroidery",
+    "40dec9b6": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: camera shake, low-res, glare on canvas, overexposed, harsh flash, cartoon, anime, text overlays, motion blur, distracting clutter, neon colors\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Logo on chest, Text: 'STRONGER'.\n\ud83c\udfac SCENE: Resilience Hoodie, model adjusting hood, white studio wall with brown wooden floor, medium-range full body shot\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: logo embroidery, heavyweight fabric texture",
+    "d4989212": "MODE: STRICT EXECUTION ONLY.\n\ud83d\uded1 HARD CONSTRAINTS: The artwork/canvas is the single source of truth; do not alter brushstrokes or colors.\nAVOID: camera shake, low-res, glare on canvas, overexposed, harsh flash, cartoon, anime, text overlays, motion blur, distracting clutter, neon colors\n\ud83d\udcf8 SOURCE OF TRUTH: Preserve Logo on chest, Text: 'STRONGER'.\n\ud83c\udfac SCENE: Resilience Hoodie, model adjusting hood, modern minimal interior, static eye-level\n\ud83c\udfa8 VIBE: minimal premium streetwear and therapeutic home d\u00e9cor, neutral tones, warm beige, charcoal, soft whites\n\ud83d\udca1 TECH: soft wrap-around lighting to avoid harsh shadows in the hood area, 50mm Lens\n\ud83c\udfaf FOCUS: heavyweight fabric texture, backprint legibility"
+  }
+}
